@@ -10,5 +10,11 @@ namespace Demo.UI.Products
     public interface IProductRepository: IRepository<Product, Guid>
     {
         Task<Product> FindByNameAsync(string name);
+        Task<List<Product>> GetListAsync(
+        int skipCount,
+        int maxResultCount,
+        string sorting,
+        string filter = null
+    );
     }
 }

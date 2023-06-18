@@ -12,17 +12,42 @@ using Volo.Abp.Domain.Repositories;
 namespace Demo.UI.Products
 {
     public class ProductService : CrudAppService<
-        Product, //The Book entity
-        ProductDto, //Used to show books
-        Guid, //Primary key of the book entity
-        PagedAndSortedResultRequestDto, //Used for paging/sorting
-        CreateUpdateProductDto>, //Used to create/update a book
-    IProductService //implement the IBookAppService
+        Product, 
+        ProductDto, 
+        Guid, 
+        PagedAndSortedResultRequestDto, 
+        CreateUpdateProductDto>, 
+    IProductService 
     {
         private readonly IProductRepository _productRepository;
         public ProductService(IRepository<Product, Guid> repository, IProductRepository productRepository) : base(repository)
         {
             _productRepository= productRepository;
+        }
+
+        public async Task<PagedResultDto<ProductDto>> GetListProductAsync(GetListProductDto input)
+        {
+            if (input.Sorting.IsNullOrWhiteSpace())
+            {
+                input.Sorting = nameof(Product.ProductName);
+            }
+
+            var products = await _productRepository.GetListAsync(
+                input.SkipCount,
+                input.MaxResultCount,
+                input.Sorting,
+                input.Filter
+            );
+
+            var totalCount = input.Filter == null
+                ? await _productRepository.CountAsync()
+                : await _productRepository.CountAsync(
+                    product => product.ProductName.Contains(input.Filter));
+
+            return new PagedResultDto<ProductDto>(
+                totalCount,
+                ObjectMapper.Map<List<Product>, List<ProductDto>>(products)
+            );
         }
 
         public async Task<ProductDto> GetProductByName(string name)
@@ -32,6 +57,11 @@ namespace Demo.UI.Products
             return productDto;
             //return new Task<ProductDto>(ObjectMapper.Map<Product,ProductDto>(products));
         }
+
+
+
+
+
         public override async Task<ProductDto> GetAsync(Guid id)
         {
             //Get the IQueryable<Product> from the repository
@@ -96,6 +126,7 @@ namespace Demo.UI.Products
 
             return $"Product.{sorting}";
         }
+
 
     }
 }

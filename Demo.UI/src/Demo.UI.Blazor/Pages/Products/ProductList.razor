@@ -6,8 +6,8 @@
 @using Volo.Abp.Application.Dtos;
 @inject IStringLocalizer<UIResource> L
 @inject AbpBlazorMessageLocalizerHelper<UIResource> LH
-
-@inherits AbpCrudPageBase<IProductService, ProductDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateProductDto>
+@inject IProductService ProductService
+@*@inherits AbpCrudPageBase<IProductService, ProductDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateProductDto>*@
 @inject NavigationManager NavigationManager
 
 
@@ -17,20 +17,24 @@
     </Column>
     <Column ColumnSize="ColumnSize.Is2">
         <Button Color="Color.Secondary" Size="Size.Small" Type="ButtonType.Link" To="product/new">Add New</Button>
+        <Button Color="Color.Secondary" Size="Size.Small" Clicked="DeleteProductSelected">Delete</Button>
 
     </Column>
 </Row>
 <Card>
     <CardTitle>Product List</CardTitle>
     <DataGrid TItem="ProductDto"
-              Data="Entities"   
+              Data=productList
+              @bind-SelectedRow = "@selectedProduct"            
+              SelectionMode="DataGridSelectionMode.Multiple"
               ReadData="OnDataGridReadAsync"
-              CurrentPage="CurrentPage"
               TotalItems="TotalCount"
               ShowPager="true"
-              PageSize="PageSize">
+              PageSize="PageSize"
+              @bind-SelectedRows="@selectedProducts">
         <DataGridColumns>
 
+            <DataGridMultiSelectColumn Width="30px"></DataGridMultiSelectColumn>      
             <DataGridColumn Field="@nameof(ProductDto.ProductID)" Caption="@L["ProductID"]" Context="context" Editable>
                 <DisplayTemplate>
                 <Link Underline="Underline.Always" Clicked="@(() => GoToEditPage(context))">@context.ProductID</Link>
