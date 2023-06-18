@@ -1,0 +1,151 @@
+﻿@page "/products"
+@using Demo.UI.Localization;
+@using Demo.UI.Orders;
+@using Demo.UI.Products;
+@using Microsoft.Extensions.Localization;
+@using Volo.Abp.Application.Dtos;
+@inject IStringLocalizer<UIResource> L
+@inject AbpBlazorMessageLocalizerHelper<UIResource> LH
+@*@inherits UIComponentBase*@
+@inherits AbpCrudPageBase<IProductService, ProductDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateProductDto>
+@inject NavigationManager NavigationManager
+@*@inject IProductService ProductService*@
+
+<Row Style="margin-bottom:12px; margin-top:12px">
+    <Column ColumnSize="ColumnSize.Is10" Style=" align-items:center; justify-content:space-around">
+        <Text Style="font-size:xx-large; font-weight:bold"></Text>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is2">
+        <Button Color="Color.Secondary" Size="Size.Small" Type="ButtonType.Link" To="product/new">Add New</Button>
+
+    </Column>
+</Row>
+<Card>
+    <CardTitle>Product List</CardTitle>
+  @*   <Validations @ref="@CreateValationRef" Model="@NewEntity" ValidateOnLoad="false">
+        <CardBody>
+            <Row class="row">
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Text>ProductID</Text>
+                    <Field>
+                        <TextEdit Placeholder="" @bind-Text="@NewEntity.ProductID" />
+                    </Field>
+                </Column>            
+
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Text>Product Name</Text>
+                    <Field>
+                        <TextEdit Placeholder="" @bind-Text="@NewEntity.ProductName" />
+                    </Field>
+                </Column>
+            </Row>
+
+            <Row>
+              
+                <Column ColumnSize="ColumnSize.Is4">
+
+                </Column>
+            </Row>
+
+            <Row Style="margin-top:20px">
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Text>Unit</Text>
+                    <Field>
+                        <TextEdit Placeholder="" @bind-Text="@NewEntity.Unit" />
+                    </Field>
+                </Column>
+
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Text>SiteCode</Text>
+                    <Field>
+                        <TextEdit Placeholder="" @bind-Text="@NewEntity.SiteCode" />
+                    </Field>
+                </Column>
+
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Text>Quantity</Text>
+                    <Field>
+                        <Field>
+                            <NumericPicker @bind-Value="@NewEntity.Quanity" />
+                        </Field>
+                    </Field>
+                </Column>
+            </Row>
+
+            <Row class="row">
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Text>QR Code</Text>
+                    <Field>
+                        <TextEdit Placeholder="" @bind-Text="@NewEntity.QRCode" />
+                    </Field>
+                </Column>
+
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Text>Sales Price</Text>
+                    <Field>
+                        <NumericPicker @bind-Value="@NewEntity.SalesPrice" />
+                    </Field>
+                </Column>
+
+                <Column ColumnSize="ColumnSize.Is4">
+                    <Text>Extended Cost</Text>
+                     <Field>
+                            <NumericPicker @bind-Value="@NewEntity.ExtenedCost" />
+                     </Field>
+                </Column>
+            </Row>       
+        </CardBody>
+     </Validations>*@
+    <DataGrid TItem="ProductDto"
+              Data="Entities"   
+              ReadData="OnDataGridReadAsync"
+              CurrentPage="CurrentPage"
+              TotalItems="TotalCount"
+              ShowPager="true"
+              PageSize="PageSize">
+        <DataGridColumns>
+
+            <DataGridColumn Field="@nameof(ProductDto.ProductID)" Caption="@L["ProductID"]" Context="context" Editable>
+                <DisplayTemplate>
+                <Link Underline="Underline.Always" Clicked="@(() => GoToEditPage(context))">@context.ProductID</Link>
+                </DisplayTemplate>
+            </DataGridColumn>
+
+
+            <DataGridColumn TItem="ProductDto"
+                            Field="@nameof(ProductDto.ProductName)"
+                            Caption="@L["ProductName"]" Editable>
+            </DataGridColumn>
+
+            <DataGridColumn TItem="ProductDto"
+                            Field="@nameof(ProductDto.Unit)"
+                            Caption="@L["Unit"]" Editable>
+            </DataGridColumn>
+            <DataGridColumn TItem="ProductDto"
+                            Field="@nameof(ProductDto.SiteCode)"
+                            Caption="@L["SiteCode"]" Editable>
+                <DisplayTemplate>
+                    @context.CreationTime.ToShortDateString()
+                </DisplayTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="ProductDto"
+                            Field="@nameof(ProductDto.Quanity)"
+                            Caption="@L["Quantity"]" Editable>
+            </DataGridColumn>
+            <DataGridColumn TItem="ProductDto"
+                            Field="@nameof(ProductDto.QRCode)"
+                            Caption="@L["QRCode"]" Editable>
+            </DataGridColumn>
+            <DataGridColumn TItem="ProductDto"
+                            Field="@nameof(ProductDto.SalesPrice)"
+                            Caption="@L["SalesPrice"]" Editable>
+            </DataGridColumn>
+            <DataGridColumn TItem="ProductDto"
+                            Field="@nameof(ProductDto.ExtenedCost)"
+                            Caption="@L["ExtendedCost"]" Editable>
+            </DataGridColumn>
+
+        </DataGridColumns>
+    </DataGrid>
+    
+</Card>

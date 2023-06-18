@@ -1,0 +1,47 @@
+{
+  "culture": "en",
+  "texts": {
+    "Menu:Home": "Home",
+    "Menu:OrderManagement": "OrderManagement",
+    "Menu:DataEntity": "Data Entity",
+    "Menu:SalesOrder": "Sales Order",
+
+    "OrderNumber": "OrderNumber",
+    "TotalAmount": "Total Amount",
+    "DistributorCode": "Distributor Code",
+    "DistributorName": "Distributor Name",
+    "OrderDate": "Order Date",
+    "CustomerID": "CustomerID",
+
+    "ProductID": "Product ID",
+    "ProductName": "Product Name",
+    "Unit": "Unit",
+    "SiteCode": "Site Code",
+    "Quantity": "Quantity",
+    "QRCode": "QR Code",
+    "SalesPrice": "Sales Price",
+    "ExtendedCost": "Extended Cost",
+
+
+    "Enum:OrderStatus.Hold": "Hold",
+    "Enum:OrderStatus.PrintedInvoice": "Printed Invoice",
+    "Enum:OrderStatus.Processing": "Processing",
+    "Enum:OrderStatus.ShipOnly": "Ship Only",
+    "Enum:OrderStatus.DeliveryAllocation": "Delivery Allocation",
+    "Enum:OrderStatus.Completed": "Completed",
+    "Enum:OrderStatus.Cancel": "Cancel",
+
+    "Enum:OrderType.InvoiceOrder": "Invoice Order",
+    "Enum:OrderType.VanSales": "Van Sales",
+    "Enum:OrderType.DropShip": "Drop Ship",
+    "Enum:OrderType.InvoiceReturn": "Invoice Return",
+
+    "Enum:PaymentThod.Cash": "Cash",
+    "Enum:PaymentThod.OnlinePayment": "Online Payment",
+    "Enum:PaymentThod.TransferByBank": "Transfer By Bank",
+    "Enum:PaymentThod.CreditCard": "Credit Card",
+
+    "Welcome": "Welcome",
+    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io."
+  }
+}

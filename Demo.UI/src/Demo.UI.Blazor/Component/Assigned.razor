@@ -1,0 +1,61 @@
+﻿<Card >
+    <CardBody>
+            <Icon Name="IconName.UserPlus" />
+            <Text class="title">Assigned To</Text>       
+        <br />
+        <button style="border-radius:50%;margin-top:10px; margin-bottom:10px">
+            <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Plus" Style="color:black" />
+        </button>
+        <br />
+        @*<Button Style="margin-top: 20px; width:100%" Outline>
+            <Icon Name="IconName.PlusCircle" />
+        </Button>*@
+        
+        <Icon Name="IconName.Paperclip" />
+        <Text class="title">Attachments</Text>
+
+        <Button Size="Size.Small" Color="Color.Dark" Style="margin-top:10px; margin-bottom:10px; width:100%" Outline>
+            Attach File  <Icon Name="IconName.PlusCircle" />
+        </Button>
+
+        <Icon Name="IconName.Star" />
+        <Text class="title">Review</Text>
+        <br />
+        <button style="border-radius:50%; margin-top:10px;margin-bottom:10px">
+              <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Plus" Style="color:black"/>
+        </button>
+       @* <Button Color="Color.Dark" Style="margin-top: 20px; width:100%; border-radius=50%" Outline>
+            <Icon Name="IconName.PlusCircle" />
+        </Button>*@
+        <br />
+        <Icon Name="IconName.Share" />
+        <Text class="title">Share With</Text>
+        <br />
+        <button style="border-radius:50%; margin-top:10px;margin-bottom:10px">
+             <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Plus" Style="color:black" />
+        </button>
+        <br/>
+        @*<Button Color="Color.Dark" Style="margin-top: 20px; width:100%" Outline>
+            <Icon Name="IconName.PlusCircle" />
+        </Button>*@
+        <Row Style="margin-top:100px"></Row>
+        <Icon Name="IconName.Comment" />
+        <Text Style="margin:10px">0</Text>
+        <hr />
+        <CardTitle Style="font-weight:bold">Edit History</CardTitle>
+        <Row>
+            <Text>You edited this 6 hours ago</Text>
+            <Text>You created this 1 week ago</Text>
+        </Row>
+
+    </CardBody>
+</Card>
+
+<style>
+    .title{
+        margin-left: 10px;
+    }
+</style>
+@code {
+
+}

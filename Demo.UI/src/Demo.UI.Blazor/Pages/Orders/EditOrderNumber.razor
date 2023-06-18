@@ -1,0 +1,450 @@
+﻿@page "/saleorder/edit/{Id}"
+@using System.ComponentModel;
+@using Demo.UI.Blazor.Component.Table.Order;
+@using Demo.UI.Localization;
+@using Demo.UI.Orders;
+@using Demo.UI.Products;
+@using Microsoft.Extensions.Localization;
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Toolbars;
+@using Demo.UI.Blazor.Component;
+@using Demo.UI.Blazor.Pages;;
+@using Volo.Abp.Application.Dtos;
+
+
+@inherits UIComponentBase
+@inject HttpClient httpClient
+@inject IStringLocalizer<UIResource> L
+@inject AbpBlazorMessageLocalizerHelper<UIResource> LH
+@inject IOrderAppService OrderAppService
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<Breadcrumb>
+    <BreadcrumbItem>
+        <Icon Name="IconName.Home"></Icon> <BreadcrumbLink To="#">Order Manegement</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        <BreadcrumbLink To="#">DataEntity</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbItem >
+        <BreadcrumbLink To="/saleorder">Sales Order(OM10100)</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbItem Active>
+        <BreadcrumbLink To="#">@Id</BreadcrumbLink>
+    </BreadcrumbItem>
+</Breadcrumb>
+    <Row Style="margin-bottom:12px">
+        <Column ColumnSize="ColumnSize.Is10" Style=" align-items:center; justify-content:space-around">
+        <Text Style="font-size:xx-large; font-weight:bold">@Id</Text>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is2">
+            <Button Color="Color.Secondary" Size="Size.Small" Style="margin-top: 20px" Outline @onclick="ToggleFilter">
+                <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.List"></Icon>
+            </Button>
+            <Button Color="Color.Secondary" Size="Size.Small" Style="margin-top: 20px" Outline>
+                <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Route"></Icon>
+            </Button>
+            <Button Color="Color.Secondary" Size="Size.Small" Style="margin-top: 20px">
+                <Icon Name="IconName.PlusCircle" />Add New
+            </Button>
+        </Column>
+    </Row>
+        <Row>
+    @if (FilterVisible)
+    {
+        <Column ColumnSize="ColumnSize.Is2">
+            <Demo.UI.Blazor.Component.Assigned></Demo.UI.Blazor.Component.Assigned>
+        </Column>
+    }
+          <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
+        <Column ColumnSize="ColumnSize.Is(columnClass)">
+            <Card>
+                <CardBody>
+                    <Row>
+                        <Column ColumnSize="ColumnSize.Is8">
+                            <Text Style="font-weight:bold">Information</Text>
+                        </Column>
+                        <Column ColumnSize="ColumnSize.Is2">
+                            <Button Color="Color.Secondary" Size="Size.Small">
+                                <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Print" />
+                            </Button>
+
+                            <Button Color="Color.Secondary" Size="Size.Small">
+                                <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.CartPlus" />
+                            </Button>
+
+                            <Button Color="Color.Secondary" Size="Size.Small">
+                                <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Copy" />
+                            </Button>
+
+                            <Button Color="Color.Secondary" Size="Size.Small">
+                                <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Tags" />
+                            </Button>
+                        </Column>
+                        <Column ColumnSize="ColumnSize.Is2">
+                            <Button Color="Color.Danger" Size="Size.Small" Clicked="DeleteEntityAsync">Delete</Button>
+                            <Button Color="Color.Secondary" Size="Size.Small" Clicked="EditEntityAsync">Save</Button>
+
+                        </Column>
+                    </Row>
+
+                    <Row class="row">
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Order Type</Text>
+                            <Select Size="Size.Small" TValue="OrderType" @bind-Value="@EditingEntity.OrderType">
+                                @foreach(var type in Enum.GetValues(typeof(OrderType)))
+                                {
+                                    <SelectItem TValue="OrderType" Value="@((OrderType)type)">
+                                        @L[$"Enum:OrderType.{type}"]
+                                    </SelectItem>
+                                }
+                               
+                            </Select>
+                        </Column>
+
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Distributor Code</Text>
+                            <Field>
+                                <TextEdit @bind-Text="@EditingEntity.DistributorCode"></TextEdit>
+                            </Field>
+                        </Column>
+
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Order Number</Text>
+                            <Field>
+                                <TextEdit @bind-Text="@EditingEntity.OrderNumber"></TextEdit>
+                            </Field>
+                        </Column>
+                    </Row>
+
+                    <Row>
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Status</Text>
+                            <Select  TValue="OrderStatus" @bind-Value="@EditingEntity.OrderStatus">
+                                @foreach (var status in Enum.GetValues(typeof(OrderStatus)))
+                                {
+                                    <SelectItem TValue="OrderStatus" Value="@((OrderStatus)status)">
+                                        @L[$"Enum:OrderStatus.{status}"]
+                                    </SelectItem>
+                                }
+                            </Select>
+                        </Column>
+
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Handle</Text>
+                            <Select TValue="OrderHandle" @bind-Value="@EditingEntity.Handle">
+                                @foreach (var handle in Enum.GetValues(typeof(OrderHandle)))
+                                {
+                                    <SelectItem Value="@((OrderHandle)handle)">@handle.ToString()</SelectItem>
+                                }
+                            </Select>
+                        </Column>
+
+                        <Column ColumnSize="ColumnSize.Is4">
+
+                        </Column>
+                    </Row>
+
+                    <Row Style="margin-top:20px">
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Customer Address</Text>
+                            <Field>
+                                <TextEdit @bind-Text="@EditingEntity.CustomerAddress"></TextEdit>
+                            </Field>
+                        </Column>
+
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Remark</Text>
+                            <Field>
+                                <TextEdit @bind-Text="@EditingEntity.Remark"></TextEdit>
+                            </Field>
+                        </Column>
+
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Invoice Number</Text>
+                            <Field>
+                                <TextEdit @bind-Text="@EditingEntity.InvoiceNumber"></TextEdit>
+                            </Field>
+                        </Column>
+                    </Row>
+
+                    <Row class="row">
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Invoice Note</Text>
+                            <Field>
+                                <TextEdit @bind-Text="@EditingEntity.InvoiceNote"></TextEdit>
+                            </Field>
+                        </Column>
+
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Customer ID</Text>
+                            <Field>
+                                <TextEdit @bind-Text="@EditingEntity.CustomerID"></TextEdit>
+                            </Field>
+                        </Column>
+
+                        <Column ColumnSize="ColumnSize.Is4">
+                            <Text>Customer Name</Text>
+                            <Field>
+                                <TextEdit @bind-Text="@EditingEntity.CustomerName"></TextEdit>
+                            </Field>
+                        </Column>
+                    </Row>
+
+                    <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+                        <Items>
+                            <Tab Name="order">Order/Invoice Information</Tab>
+                            <Tab Name="shipping">Shipping Info</Tab>
+                            <Tab Name="address">Address</Tab>
+                            <Tab Name="taxt">Taxt Information</Tab>
+                            <Tab Name="discount">Discount Information</Tab>
+                        </Items>
+                        <Content>
+                            <TabPanel Name="order">
+                                <TabPanel Name="order">
+                                    <Row class="row">
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Order Date</Text>
+                                            <Field>
+                                                <DateEdit TValue="DateTime" @bind-Date="EditingEntity.OrderDate" />
+                                            </Field>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Sales Person</Text>
+                                            <Field>
+                                                <TextEdit Placeholder="" />
+                                            </Field>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Delivery Staff</Text>
+                                            <Field>
+                                                <TextEdit @bind-Text="@EditingEntity.DeliveryStaff">
+                                                    <Feedback>
+                                                        <ValidationError />
+                                                    </Feedback>
+                                                </TextEdit>
+                                            </Field>
+                                        </Column>
+                                    </Row>
+
+                                    <Row class="row">
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Delivery Unit</Text>
+                                            <Field>
+                                                <TextEdit Size="Size.Small" Placeholder="Marketing Da Nang" @bind-Text="@EditingEntity.DistributorName" />
+                                            </Field>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Pay Method</Text>
+                                            <Select TValue="PaymentMethod" @bind-SelectedValue="@EditingEntity.PaymentMethod">
+                                                @foreach (var method in Enum.GetValues(typeof(PaymentMethod)))
+                                                {
+                                                    <SelectItem Value="@((PaymentMethod)method)">@L[$"Enum:PaymentThod.{method}"]</SelectItem>
+                                                }
+                                            </Select>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+
+                                        </Column>
+                                    </Row>
+
+                                    <Row class="row">
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Row>
+                                                <Text>Disc Ajustment(%Money)</Text>
+                                                <Column ColumnSize="ColumnSize.Is6">
+                                                    <Field>
+                                                        <NumericPicker @bind-Value="@EditingEntity.Discount" />
+                                                    </Field>
+                                                </Column>
+                                                <Column ColumnSize="ColumnSize.Is6">
+                                                    <Field>
+                                                        <NumericPicker @bind-Value="@EditingEntity.Discount" />
+                                                    </Field>
+                                                </Column>
+                                            </Row>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Row>
+                                                <Text>Volumn/Line Discount</Text>
+                                                <Column ColumnSize="ColumnSize.Is6">
+                                                    <Field>
+                                                        <NumericPicker @bind-Value="@EditingEntity.Discount" />
+                                                    </Field>
+                                                </Column>
+                                                <Column ColumnSize="ColumnSize.Is6">
+                                                    <Field>
+                                                        <NumericPicker @bind-Value="@EditingEntity.Discount" />
+                                                    </Field>
+                                                </Column>
+                                            </Row>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Row>
+                                                <Column ColumnSize="ColumnSize.Is12">
+                                                    <Text>Reward Amount</Text>
+                                                    <Field>
+                                                        <NumericPicker @bind-Value="@EditingEntity.RewardAmount" />
+                                                    </Field>
+                                                </Column>
+                                            </Row>
+                                        </Column>
+                                    </Row>
+
+                                    <Row class="row">
+                                        <Column ColumnSize="ColumnSize.Is12">
+                                            <Check TValue="bool" @bind-Checked="@remember">Do Not Caculator Discount</Check>
+                                        </Column>
+                                    </Row>
+
+                                    <Row class="row">
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Total Item Amount</Text>
+                                            <Field>
+                                                <NumericPicker @bind-Value="@EditingEntity.TotalItem" />
+                                            </Field>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Total Taxt Amount</Text>
+                                            <Field>
+                                                <NumericPicker @bind-Value="@EditingEntity.Tax" />
+                                            </Field>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Quantity Amount</Text>
+                                            <Field>
+                                                <NumericPicker @bind-Value="@EditingEntity.Quanity" />
+                                            </Field>
+                                        </Column>
+                                    </Row>
+
+                                    <Row class="row">
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Total</Text>
+                                            <Field>
+                                                <NumericPicker @bind-Value="@EditingEntity.Total" />
+                                            </Field>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+                                            <Text>Total Amount</Text>
+                                            <Field>
+                                                <NumericPicker @bind-Value="@EditingEntity.TotalAmount" />
+                                            </Field>
+                                        </Column>
+
+                                        <Column ColumnSize="ColumnSize.Is4">
+
+                                        </Column>
+                                    </Row>
+                                </TabPanel>
+                            </TabPanel>
+                            <TabPanel Name="shipping">
+                                Content for Shipping.
+                            </TabPanel>
+                            <TabPanel Name="address">
+                                Content for Address.
+                            </TabPanel>
+                            <TabPanel Name="taxt">
+                                Content for Taxt Information.
+                            </TabPanel>
+                            <TabPanel Name="discount">
+                                Content for Discount Information.
+                            </TabPanel>
+                        </Content>
+                    </Tabs>
+                    <DataGrid TItem="ProductDto"
+                              Data="@productDtoList"
+                              Editable="true"
+                              EditMode="DataGridEditMode.Inline"
+                              Responsive
+                              ShowPager>
+                        <DataGridCommandColumn />
+
+                        <DataGridColumn Field="@nameof( ProductDto.ProductID )" Caption="ProductID" Editable>
+                            <EditTemplate>
+                                <TextEdit Text="@((string)context.CellValue)" TextChanged="@(value => { FindProduct(value);
+                            context.CellValue = value;
+                            context.UpdateCell(nameof(ProductDto.ProductName),name);
+                            context.UpdateCell(nameof(ProductDto.Unit),unit);
+                            context.UpdateCell(nameof(ProductDto.SiteCode),Sitecode);
+                            context.UpdateCell(nameof(ProductDto.Quanity),quantity);
+                            context.UpdateCell(nameof(ProductDto.QRCode),qrcode);
+                            context.UpdateCell(nameof(ProductDto.SalesPrice),saleprice);
+                            context.UpdateCell(nameof(ProductDto.ExtenedCost),extendcost);
+                            })"></TextEdit>
+                            </EditTemplate>
+                        </DataGridColumn>
+                        <DataGridColumn Field="@nameof( ProductDto.ProductName )" Caption="ProductName" Context="context" Editable>
+                            <EditTemplate>
+                                <TextEdit Text="@((string)context.CellValue)"></TextEdit>
+                            </EditTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn Field="@nameof( ProductDto.Unit )" Caption="Unit" Editable>
+                            <EditTemplate>
+                                <TextEdit Text="@((string)context.CellValue)"></TextEdit>
+                            </EditTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn Field="@nameof( ProductDto.SiteCode )" Caption="SiteCode" Editable>
+                            <EditTemplate>
+                                <TextEdit Text="@((string)context.CellValue)"></TextEdit>
+                            </EditTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn Field="@nameof( ProductDto.Quanity )" Caption="Quanity" Editable>
+                            <EditTemplate>
+                                <NumericEdit TValue="int"
+                                             Value="@((int)context.CellValue)"
+                                                  Disabled />
+                            </EditTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn Field="@nameof( ProductDto.QRCode )" Caption="QRCode" Editable>
+                            <EditTemplate>
+                                <TextEdit Text="@((string)context.CellValue)"></TextEdit>
+                            </EditTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn Field="@nameof( ProductDto.SalesPrice )" Caption="SalesPrice" Editable>
+                            <EditTemplate>
+                                <NumericEdit TValue="double"
+                                             Value="@((double)context.CellValue)"
+                                                  Disabled />
+                            </EditTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn Field="@nameof( ProductDto.ExtenedCost )" Caption="ExtenedCost" Editable>
+                            <EditTemplate>
+                                <NumericEdit TValue="double"
+                                             Value="@((double)context.CellValue)"
+                                                  Disabled />
+                            </EditTemplate>
+                        </DataGridColumn>
+
+                    </DataGrid>
+                </CardBody>
+            </Card>
+
+
+            @*****************************COMMENT************************************@
+            <Comment></Comment>
+        </Column>
+          </Validations>
+        </Row>
+
+
+@code {
+
+}

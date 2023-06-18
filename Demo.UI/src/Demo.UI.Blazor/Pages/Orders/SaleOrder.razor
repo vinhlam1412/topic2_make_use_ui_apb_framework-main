@@ -1,0 +1,321 @@
+﻿@page "/saleorder"
+@using System.ComponentModel;
+@using Demo.UI.Blazor.Pages;
+@using Demo.UI.Localization;
+@using Demo.UI.Orders;
+@using Demo.UI.Products;
+@using Microsoft.Extensions.Localization;
+@using Volo.Abp.Application.Dtos;
+@inject IStringLocalizer<UIResource> L
+@inherits AbpCrudPageBase<IOrderAppService, OrderDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateOrderDto>
+ 
+
+@inject NavigationManager NavigationManager
+@inject IOrderAppService OrderAppService
+@inject IProductService ProductService
+
+    
+    <Breadcrumb>
+        <BreadcrumbItem>
+          <Icon Name="IconName.Home" ></Icon> <BreadcrumbLink To="#">Order Manegement</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+            <BreadcrumbLink To="#">DataEntity</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem Active>
+            <BreadcrumbLink To="#">Sales Order(OM10100)</BreadcrumbLink>
+        </BreadcrumbItem>
+    </Breadcrumb>
+    <Row Style="margin-bottom:12px">
+        <Column ColumnSize="ColumnSize.Is10" Style=" align-items:center; justify-content:space-around">
+            <Text Style="font-size:xx-large; font-weight:bold">Sales Order</Text>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is2">
+            <Button Color="Color.Secondary" Size="Size.Small" Style="margin-top: 20px" Outline @onclick="ToggleFilter">
+                <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.List"></Icon>
+            </Button>
+            <Button Color="Color.Secondary" Size="Size.Small" Style="margin-top: 20px" Outline>
+                <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Route"></Icon>
+            </Button>
+        <Button Color="Color.Secondary" Size="Size.Small" Style="margin-top: 20px" Type="ButtonType.Link" To="orders/new">
+                <Icon Name="IconName.PlusCircle" />Add New
+            </Button>
+        </Column>
+    </Row>
+
+            <Row>
+              @if(FilterVisible){
+                <Column ColumnSize="ColumnSize.Is2">
+                  <Demo.UI.Blazor.Component.Filter></Demo.UI.Blazor.Component.Filter>
+            </Column>
+              }
+
+            <Column ColumnSize="ColumnSize.Is(columnClass)">
+               <Card>
+                   <CardBody>
+                        <Row>
+                            <Column Style="width:200px">
+                                <Text Style="font-weight:bold">Sales Territory</Text>
+                                <Select Size="Size.Small" TValue="string" @bind-Value="SelectedOption1">
+                                    <SelectItem Value="Option1">Option 1</SelectItem>
+                                    <SelectItem Value="Option2">Option 2</SelectItem>
+                                    <SelectItem Value="Option3">Option 3</SelectItem>
+                                    <SelectItem Value="Option4">Option 4</SelectItem>
+                                </Select>
+                            </Column>
+
+                            <Column Style="width:200px">
+                                <Text Style="font-weight:bold">From Date</Text>
+                                <Addons Size="Size.Small">
+                                    <Addon AddonType="AddonType.Body">
+                                        <DatePicker @ref="@datePicker" TValue="DateTime?" />
+                                    </Addon>
+                                    <Addon AddonType="AddonType.End">
+                                        <Button Color="Color.Light" Clicked="@(()=>datePicker.ToggleAsync())">
+                                            <Icon Name="IconName.CalendarDay" />
+                                        </Button>
+                                    </Addon>
+                                </Addons>
+                            </Column>
+
+                            <Column Style="width:200px">
+                                <Text Style="font-weight:bold">Order Type</Text>
+                                <Select Size="Size.Small" TValue="string" @bind-Value="SelectedOption3">
+                                    <SelectItem Value="Option1">Option 1</SelectItem>
+                                    <SelectItem Value="Option2">Option 2</SelectItem>
+                                    <SelectItem Value="Option3">Option 3</SelectItem>
+                                    <SelectItem Value="Option4">Option 4</SelectItem>
+                                </Select>
+                            </Column>
+
+                            <Column Style="width:200px">
+                                <Text Style="font-weight:bold">Order Number</Text>
+                                <Select Size="Size.Small" TValue="string" @bind-Value="SelectedOption4">
+                                    <SelectItem Value="Option1">Option 1</SelectItem>
+                                    <SelectItem Value="Option2">Option 2</SelectItem>
+                                    <SelectItem Value="Option3">Option 3</SelectItem>
+                                    <SelectItem Value="Option4">Option 4</SelectItem>
+                                </Select>
+                            </Column>
+
+                            <Column ColumnSize="ColumnSize.Is3">
+                                <Text Style="font-weight:bold">Distributor</Text>
+                                <Select Size="Size.Small" TValue="string" @bind-Value="SelectedOption4">
+                                    <SelectItem Value="Option1">Option 1</SelectItem>
+                                    <SelectItem Value="Option2">Option 2</SelectItem>
+                                    <SelectItem Value="Option3">Option 3</SelectItem>
+                                    <SelectItem Value="Option4">Option 4</SelectItem>
+                                </Select>
+                            </Column>
+
+                            <Column>
+
+                            </Column>
+                        </Row>
+
+                        <Row Style="margin-top:20px">
+                            <Column Style="width:200px">
+                                <Text Style="font-weight:bold">State/Province</Text>
+                                <Select Size="Size.Small" TValue="string" @bind-Value="SelectedOption4">
+                                    <SelectItem Value="Option1">Option 1</SelectItem>
+                                    <SelectItem Value="Option2">Option 2</SelectItem>
+                                    <SelectItem Value="Option3">Option 3</SelectItem>
+                                    <SelectItem Value="Option4">Option 4</SelectItem>
+                                </Select>
+                            </Column>
+
+                            <Column Style="width:200px">
+                                <Text Style="font-weight:bold">To Date</Text>
+                                <Addons Size="Size.Small">
+                                    <Addon AddonType="AddonType.Body">
+                                        <DatePicker @ref="@datePicker" TValue="DateTime?" />
+                                    </Addon>
+                                    <Addon AddonType="AddonType.End">
+                                        <Button Color="Color.Light" Clicked="@(()=>datePicker.ToggleAsync())">
+                                            <Icon Name="IconName.CalendarDay" />
+                                        </Button>
+                                    </Addon>
+                                </Addons>
+                            </Column>
+
+                            <Column Style="width:200px">
+                                <Text Style="font-weight:bold">Status</Text>
+                                <Select Size="Size.Small" TValue="string" @bind-Value="SelectedOption2">
+                                    <SelectItem Value="Option1">Option 1</SelectItem>
+                                    <SelectItem Value="Option2">Option 2</SelectItem>
+                                    <SelectItem Value="Option3">Option 3</SelectItem>
+                                    <SelectItem Value="Option4">Option 4</SelectItem>
+                                </Select>
+                            </Column>
+
+                            <Column Style="width:200px">
+                                <Text Style="font-weight:bold">Invoice Number</Text>
+                                <Select Size="Size.Small" TValue="string" @bind-Value="SelectedOption3">
+                                    <SelectItem Value="Option1">Option 1</SelectItem>
+                                    <SelectItem Value="Option2">Option 2</SelectItem>
+                                    <SelectItem Value="Option3">Option 3</SelectItem>
+                                    <SelectItem Value="Option4">Option 4</SelectItem>
+                                </Select>
+                            </Column>
+
+                            <Column ColumnSize="ColumnSize.Is3">
+                                <Text Style="font-weight:bold">Customer</Text>
+                                <TextEdit Size="Size.Small" Placeholder="Input name, Code, Customer, Chanel or Shop Type" />
+                            </Column>
+                            <Column Style="align-items:center; justify-content:center">
+                                <Button Color="Color.Secondary" Size="Size.Small" Style="margin-top: 20px">
+                                    Apply
+                                </Button>
+                                <Button Color="Color.Secondary" Size="Size.Small" Style="margin-top: 20px" Outline>
+                                    Clear
+                                </Button>
+                            </Column>
+                        </Row>
+
+                <DataGrid TItem="OrderDto"
+                          Data="Entities"
+                          @bind-SelectedRow="@orders"
+                          ReadData="OnDataGridReadAsync"
+                          TotalItems="TotalCount"
+                          ShowPager="true"
+                          PageSize="PageSize"    
+                          Editable
+                          EditMode="DataGridEditMode.Inline">
+                    <DataGridColumns>
+                        @*<DataGridColumn Field="@nameof(OrderDto.Id)" Caption="ID" Context="context" Editable>                          
+                        </DataGridColumn>*@
+                        <DataGridColumn Field="@nameof(OrderDto.OrderNumber)" Caption="@L["OrderNumber"]" Context="context" Editable>
+                            <DisplayTemplate>
+                                <Link Underline="Underline.Always" Clicked="@(() => GoToEditPage(context))">@context.OrderNumber</Link>                       
+                            </DisplayTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn TItem="OrderDto"
+                                        Field="@nameof(OrderDto.TotalAmount)"
+                                        Caption="@L["TotalAmount"]" Editable>
+                                        <EditTemplate>
+                                             <NumericEdit TValue="double"
+                                             Value="@((double)context.CellValue)"
+                                             ValueChanged="@( v => {
+                            context.CellValue = v;
+                            context.UpdateCell( nameof( context.Item.TotalAmount ), v * context.Item.Total );
+                         })" />
+                                        </EditTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn Field="@nameof(OrderDto.OrderStatus)" Caption="@L["Order Status"]" Editable>
+                            <DisplayTemplate>
+                                @if (context.OrderStatus == OrderStatus.Hold)
+                                {
+                                    <Badge Style="color: #F5BE4E; background-color: #FFF9EF">@context.OrderStatus</Badge>
+                                }
+                                else if (context.OrderStatus == OrderStatus.Processing)
+                                {
+                                    <Badge Style="color: #5FB0E7; background-color: #D8E9F5">@context.OrderStatus</Badge>
+                                }
+                                else if (context.OrderStatus == OrderStatus.DeliveryAllocation)
+                                {
+                                    <Badge Style="color: #918F83; background-color: #EDEDEF">@context.OrderStatus</Badge>
+                                }
+                                else if (context.OrderStatus == OrderStatus.Completed)
+                                {
+                                    <Badge Style="color: #3BC283; background-color: #DEFFF8">@context.OrderStatus</Badge>
+                                }
+                                else if (context.OrderStatus == OrderStatus.Ordered)
+                                {
+                                    <Badge Style="color: #8373dc; background-color: #E6E2F3">@context.OrderStatus</Badge>
+                                }
+                                else if (context.OrderStatus == OrderStatus.PrintedInvoice)
+                                {
+                                    <Badge Style="color: #9ec0d3; background-color: #ECF6F9">@context.OrderStatus</Badge>
+                                }
+                                else
+                                {
+                                    <Badge Style="color: #D7888E; background-color: #F9EDF0">@context.OrderStatus</Badge>
+                                }
+                            </DisplayTemplate>
+                        </DataGridColumn>
+
+                        <DataGridColumn TItem="OrderDto"
+                                        Field="@nameof(OrderDto.DistributorCode)"
+                                        Caption="@L["DistributorCode"]" Editable>    
+                        </DataGridColumn>
+
+
+
+                        <DataGridColumn TItem="OrderDto"
+                                        Field="@nameof(OrderDto.DistributorName)"
+                                        Caption="@L["DistributorName"]" Editable>
+                        </DataGridColumn>
+                        <DataGridColumn TItem="OrderDto"
+                                        Field="@nameof(OrderDto.OrderDate)"
+                                        Caption="@L["OrderDate"]" Editable>
+                            <DisplayTemplate>
+                                @context.CreationTime.ToShortDateString()
+                            </DisplayTemplate>
+                        </DataGridColumn>
+                        <DataGridColumn TItem="OrderDto"
+                                        Field="@nameof(OrderDto.CustomerID)"
+                                        Caption="@L["CustomerID"]" Editable>
+                        </DataGridColumn>
+                    </DataGridColumns>
+                </DataGrid>
+
+
+                @*-----------------------------------------Emloyee-------------------------------*@
+               @* <DataGrid TItem="Employee"
+                          Data="@employeeList"
+                          Editable
+                          EditMode="DataGridEditMode.Inline"
+                          Filterable
+                          FilterMethod="DataGridFilterMethod.StartsWith"
+                          Responsive
+                          ShowPager>
+                    <DataGridCommandColumn />
+                    <DataGridColumn Field="@nameof( Employee.Salary )" Caption="Salary" Editable DisplayFormat="{0:C}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("fr-FR")">
+                        <EditTemplate>
+                            <NumericEdit TValue="float"
+                                         Value="@((float)context.CellValue)"
+                                         ValueChanged="@( v => {
+                            context.CellValue = v;
+                            context.UpdateCell( nameof( Employee.Tax ), v * 2 );
+                         })" />
+                        </EditTemplate>
+                    </DataGridColumn>
+                    <DataGridColumn Field="@nameof( Employee.Tax )" Caption="Tax" Editable DisplayFormat="{0:C}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("fr-FR")">
+                        <EditTemplate>
+                            <NumericEdit TValue="float"
+                                         Value="@((float)context.CellValue)"
+                                              Disabled />
+                        </EditTemplate>
+                    </DataGridColumn>
+                </DataGrid>*@
+
+
+
+
+
+       
+                @*    <TextEdit @bind-Text="@name"></TextEdit>
+                    <Button Clicked="@FindProduct" Color="Color.Primary">Search</Button>
+                @if (_productDto != null)
+                {
+                    <p>Name: @_productDto.ProductName</p>
+                    <p>Description: @_productDto.ProductID</p>
+                   
+                }*@
+                   </CardBody>
+               </Card>
+            </Column>
+            </Row>
+
+
+<style>
+    .table-title{
+        font-weight:bold;
+        color:black
+    }
+</style>
+@code {
+   
+}

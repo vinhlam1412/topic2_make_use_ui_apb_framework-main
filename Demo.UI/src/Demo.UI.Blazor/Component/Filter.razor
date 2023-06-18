@@ -1,0 +1,36 @@
+﻿<Card>
+    <CardBody>
+        <CardTitle Size="3" Style="justify-content:space-around">
+            <Text>Fitler By</Text>
+            <Icon Name="IconName.Filter" />
+        </CardTitle>
+        <Select TValue="int" Style="margin-top: 24px">
+            <SelectItem Value="1">Asigned To</SelectItem>
+            <SelectItem Value="2">Two</SelectItem>
+            <SelectItem Value="3">Three</SelectItem>
+            <SelectItem Value="4">Four</SelectItem>
+        </Select>
+        <Select TValue="int" Style="margin-top: 24px">
+            <SelectItem Value="1">Created To</SelectItem>
+            <SelectItem Value="2">Two</SelectItem>
+            <SelectItem Value="3">Three</SelectItem>
+            <SelectItem Value="4">Four</SelectItem>
+        </Select>
+        <Button Color="Color.Danger" Margin="Margin.Is2.FromTop" Outline>
+            <Icon Name="IconName.PlusCircle" />  Add Filter
+        </Button>
+
+        <CardTitle Size="3" Style="margin-top:32px">
+            Save Filter
+        </CardTitle>
+        <TextEdit Placeholder="Filter Name" Style="margin-top: 24px"> </TextEdit>
+        <Button Color="Color.Secondary" Style="margin-top: 20px; width:100%">
+            Save
+        </Button>
+    </CardBody>
+
+</Card>
+
+@code {
+
+}

@@ -1,0 +1,14 @@
+﻿@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+
+@*<Icon Name="IconName.Search" Style="position:absolute; padding:17px"></Icon>*@
+<TextEdit Size="Size.Small" Placeholder="Search" />
+
+<div style="color: black; margin: 8px;">
+    <i class="far fa-bell" @onclick="ShowNotifications"></i>
+</div>
+@code {
+    private async Task ShowNotifications()
+    {
+        await Message.Info("TODO: Show notifications");
+    }
+}
