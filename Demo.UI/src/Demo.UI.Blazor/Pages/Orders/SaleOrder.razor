@@ -260,50 +260,6 @@
                         </DataGridColumn>
                     </DataGridColumns>
                 </DataGrid>
-
-
-                @*-----------------------------------------Emloyee-------------------------------*@
-               @* <DataGrid TItem="Employee"
-                          Data="@employeeList"
-                          Editable
-                          EditMode="DataGridEditMode.Inline"
-                          Filterable
-                          FilterMethod="DataGridFilterMethod.StartsWith"
-                          Responsive
-                          ShowPager>
-                    <DataGridCommandColumn />
-                    <DataGridColumn Field="@nameof( Employee.Salary )" Caption="Salary" Editable DisplayFormat="{0:C}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("fr-FR")">
-                        <EditTemplate>
-                            <NumericEdit TValue="float"
-                                         Value="@((float)context.CellValue)"
-                                         ValueChanged="@( v => {
-                            context.CellValue = v;
-                            context.UpdateCell( nameof( Employee.Tax ), v * 2 );
-                         })" />
-                        </EditTemplate>
-                    </DataGridColumn>
-                    <DataGridColumn Field="@nameof( Employee.Tax )" Caption="Tax" Editable DisplayFormat="{0:C}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("fr-FR")">
-                        <EditTemplate>
-                            <NumericEdit TValue="float"
-                                         Value="@((float)context.CellValue)"
-                                              Disabled />
-                        </EditTemplate>
-                    </DataGridColumn>
-                </DataGrid>*@
-
-
-
-
-
-       
-                @*    <TextEdit @bind-Text="@name"></TextEdit>
-                    <Button Clicked="@FindProduct" Color="Color.Primary">Search</Button>
-                @if (_productDto != null)
-                {
-                    <p>Name: @_productDto.ProductName</p>
-                    <p>Description: @_productDto.ProductID</p>
-                   
-                }*@
                    </CardBody>
                </Card>
             </Column>
